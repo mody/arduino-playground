@@ -1,4 +1,4 @@
-// #include <Arduino.h>
+ #include <Arduino.h>
 // #include <IRremote.h>
 
 // #define IR_PIN 11
@@ -153,15 +153,19 @@ void loop() {
     switch(in) {
     case 'F': // forward
     case 'f': // forward
+    case '1': // forward
         moveForward(); break;
     case 'B': // backward
     case 'b': // backward
+    case '2': // backward
         moveBackward(); break;
     case 'L': // turn left
     case 'l': // turn left
+    case '3': // turn left
         turnLeft(); break;
     case 'R': // turn right
     case 'r': // turn right
+    case '4': // turn right
         turnRight(); break;
     default:
         stopMotors();

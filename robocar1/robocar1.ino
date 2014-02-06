@@ -1,7 +1,7 @@
 // #include <Arduino.h>
-#include <IRremote.h>
+// #include <IRremote.h>
 
-#define IR_PIN 9
+// #define IR_PIN 11
 
 #define MOTOR_ENA_PIN 6
 #define MOTOR_IN1_PIN 7
@@ -12,8 +12,9 @@
 #define MOTOR_IN4_PIN 4
 
 // delay between commands (in ms)
-#define COMMAND_DELAY 500
+#define COMMAND_DELAY 200
 
+#if 0
 // IR READER
 IRrecv irrecv(IR_PIN);
 decode_results results;
@@ -64,6 +65,7 @@ int decode_ir(unsigned long value) {
     return ret;
 }
 
+#endif
 
 void moveForward() {
     digitalWrite(MOTOR_ENA_PIN, LOW);
@@ -126,7 +128,7 @@ void stopMotors() {
 void setup() {
     Serial.begin(9600);
 
-    irrecv.enableIRIn(); // Start the IR receiver
+    // irrecv.enableIRIn(); // Start the IR receiver
 
     // configure motor PINs
     pinMode(MOTOR_ENA_PIN, OUTPUT);
@@ -140,24 +142,30 @@ void setup() {
 
 
 void loop() {
-    int ir = 0;
+    byte in = 0;
 
-    if (irrecv.decode(&results)) {
-        ir = decode_ir(results.value);
-        irrecv.resume(); // Receive the next value
+    while (Serial.available()) {
+        // read the incoming byte:
+        in = Serial.read();
+        // Serial.write(in);
     }
 
-    switch(ir) {
-    case 'w': // forward
+    switch(in) {
+    case 'F': // forward
+    case 'f': // forward
         moveForward(); break;
-    case 's': // backward
+    case 'B': // backward
+    case 'b': // backward
         moveBackward(); break;
-    case 'a': // turn left
+    case 'L': // turn left
+    case 'l': // turn left
         turnLeft(); break;
-    case 'd': // turn right
+    case 'R': // turn right
+    case 'r': // turn right
         turnRight(); break;
     default:
-        stopMotors(); break;
+        stopMotors();
+        Serial.write(in);
     }
 
     delay(COMMAND_DELAY);

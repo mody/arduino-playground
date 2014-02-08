@@ -7,10 +7,20 @@
 
 volatile bool level = false;
 volatile int counter = 0;
+volatile long lastms = 0;
+volatile long lastus = 0;
+volatile long delayms = 0;
+volatile long delayus = 0;
 
 ISR (ir_isr) {
     level = PIND & _BV(IR_PIN);
     ++counter;
+
+    delayms = millis() - lastms;
+    lastms = millis();
+
+    delayus = micros() - lastus;
+    lastus = micros();
 }
 
 void setup() {
@@ -30,6 +40,10 @@ void loop() {
         Serial.print("cntr: ");
         Serial.print(counter);
         Serial.print("; lvl: ");
-        Serial.println(level);
+        Serial.print(level);
+        Serial.print("; ms: ");
+        Serial.print(delayms);
+        Serial.print("; us: ");
+        Serial.println(delayus);
     }
 }

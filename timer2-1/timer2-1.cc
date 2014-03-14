@@ -8,19 +8,24 @@
 
 #define LED_PIN 13 // PB5 (D 13)
 
-uint16_t LED_PORT;
-uint8_t LED_BIT;
+volatile uint8_t* LED_REG;
+uint8_t LED_MASK;
+
+int counter = 0;
 
 // disables PWM on:
 // Timer2 (PWM 3 and 11)
 
 void setup() {
+    Serial.begin(9600);
+
     pinMode(LED_PIN, OUTPUT);
 
-    LED_PORT = digitalPinToPort(LED_PIN);
-    LED_BIT = digitalPinToBitMask(LED_PIN);
+    LED_REG = portOutputRegister(digitalPinToPort(LED_PIN));
+    LED_MASK = digitalPinToBitMask(LED_PIN);
 
-    LED_PORT |= LED_BIT;
+    *LED_REG |= LED_MASK;
+
 
     // dissable interrupts
     cli();
@@ -43,12 +48,11 @@ void setup() {
     // enable interrupts
     sei();
 
-    LED_PORT &= ~LED_BIT;
+    *LED_REG &= ~LED_MASK;
 }
 
 
 ISR(TIMER2_COMPA_vect) {
-    static int counter = 0;
 
     if(++counter < 50) {
         return;
@@ -57,7 +61,7 @@ ISR(TIMER2_COMPA_vect) {
 
     // every 100ms here
 
-    LED_PORT ^= LED_BIT;
+    *LED_REG ^= LED_MASK;
 }
 
 

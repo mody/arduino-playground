@@ -6,8 +6,8 @@
 // PIN mapping
 // /usr/share/arduino/hardware/arduino/variants/standard/pins_arduino.h
 
-// delay between commands (in ms)
-enum { COMMAND_DELAY = 200 };
+// limit 30cm
+enum { RANGE_LIMIT = 20 };
 
 Mody::Motor motor;
 Mody::Sonic sonic;
@@ -26,44 +26,40 @@ void loop() {
         range /= 58; // convert to cm
     }
 
-    if (range < 30) {
-        // TODO : all stop!
+    if (range && range < RANGE_LIMIT) {
+        // ALL STOP!
+        motor.stop();
+    }
+
+    if (!Serial.available()) {
+        return;
     }
 
     // handle communication
-
-#if 0
-    byte in = 0;
-
-    while (Serial.available()) {
-        // read the incoming byte:
-        in = Serial.read();
-        // Serial.write(in);
-    }
+    const byte in = Serial.read();
 
     switch(in) {
     case 'F': // forward
     case 'f': // forward
     case '1': // forward
-        moveForward(); break;
+        if (!range || range >= RANGE_LIMIT) {
+            motor.forward();
+        }
+        break;
     case 'B': // backward
     case 'b': // backward
     case '2': // backward
-        moveBackward(); break;
+        motor.backward(); break;
     case 'L': // turn left
     case 'l': // turn left
     case '3': // turn left
-        turnLeft(); break;
+        motor.left(); break;
     case 'R': // turn right
     case 'r': // turn right
     case '4': // turn right
-        turnRight(); break;
+        motor.right(); break;
     default:
-        stopMotors();
-        Serial.write(in);
+        motor.stop();
     }
-
-    delay(COMMAND_DELAY);
-#endif
 }
 

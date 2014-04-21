@@ -1,86 +1,15 @@
 #include <Arduino.h>
-
-// right-side wheels
-#define MOTOR_ENA_PIN 4
-#define MOTOR_IN1_PIN 5
-#define MOTOR_IN2_PIN 6
-
-// left-side wheels
-#define MOTOR_ENB_PIN 8
-#define MOTOR_IN3_PIN 9
-#define MOTOR_IN4_PIN 10
+#include "motor.h"
 
 // delay between commands (in ms)
 #define COMMAND_DELAY 200
 
-void moveForward() {
-    digitalWrite(MOTOR_ENA_PIN, LOW);
-    digitalWrite(MOTOR_ENB_PIN, LOW);
-    digitalWrite(MOTOR_IN1_PIN, HIGH);
-    digitalWrite(MOTOR_IN2_PIN, LOW);
-    digitalWrite(MOTOR_IN3_PIN, HIGH);
-    digitalWrite(MOTOR_IN4_PIN, LOW);
-    digitalWrite(MOTOR_ENA_PIN, HIGH);
-    digitalWrite(MOTOR_ENB_PIN, HIGH);
-}
-
-
-void moveBackward() {
-    digitalWrite(MOTOR_ENA_PIN, LOW);
-    digitalWrite(MOTOR_ENB_PIN, LOW);
-    digitalWrite(MOTOR_IN1_PIN, LOW);
-    digitalWrite(MOTOR_IN2_PIN, HIGH);
-    digitalWrite(MOTOR_IN3_PIN, LOW);
-    digitalWrite(MOTOR_IN4_PIN, HIGH);
-    digitalWrite(MOTOR_ENA_PIN, HIGH);
-    digitalWrite(MOTOR_ENB_PIN, HIGH);
-}
-
-
-void turnRight() {
-    digitalWrite(MOTOR_ENA_PIN, LOW);
-    digitalWrite(MOTOR_ENB_PIN, LOW);
-    digitalWrite(MOTOR_IN1_PIN, LOW);
-    digitalWrite(MOTOR_IN2_PIN, LOW);
-    digitalWrite(MOTOR_IN3_PIN, HIGH);
-    digitalWrite(MOTOR_IN4_PIN, LOW);
-    digitalWrite(MOTOR_ENA_PIN, HIGH);
-    digitalWrite(MOTOR_ENB_PIN, HIGH);
-}
-
-
-void turnLeft() {
-    digitalWrite(MOTOR_ENA_PIN, LOW);
-    digitalWrite(MOTOR_ENB_PIN, LOW);
-    digitalWrite(MOTOR_IN1_PIN, HIGH);
-    digitalWrite(MOTOR_IN2_PIN, LOW);
-    digitalWrite(MOTOR_IN3_PIN, LOW);
-    digitalWrite(MOTOR_IN4_PIN, LOW);
-    digitalWrite(MOTOR_ENA_PIN, HIGH);
-    digitalWrite(MOTOR_ENB_PIN, HIGH);
-}
-
-
-void stopMotors() {
-    digitalWrite(MOTOR_ENA_PIN, LOW);
-    digitalWrite(MOTOR_ENB_PIN, LOW);
-    digitalWrite(MOTOR_IN1_PIN, LOW);
-    digitalWrite(MOTOR_IN2_PIN, LOW);
-    digitalWrite(MOTOR_IN3_PIN, LOW);
-    digitalWrite(MOTOR_IN4_PIN, LOW);
-}
-
+Mody::Motor motor;
 
 void setup() {
     Serial.begin(9600);
 
-    // configure motor PINs
-    pinMode(MOTOR_ENA_PIN, OUTPUT);
-    pinMode(MOTOR_IN1_PIN, OUTPUT);
-    pinMode(MOTOR_IN2_PIN, OUTPUT);
-    pinMode(MOTOR_ENB_PIN, OUTPUT);
-    pinMode(MOTOR_IN3_PIN, OUTPUT);
-    pinMode(MOTOR_IN4_PIN, OUTPUT);
+    motor.setup();
 }
 
 

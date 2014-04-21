@@ -1,15 +1,22 @@
 #include <Arduino.h>
+
 #include "motor.h"
+#include "sonic.h"
+
+// PIN mapping
+// /usr/share/arduino/hardware/arduino/variants/standard/pins_arduino.h
 
 // delay between commands (in ms)
-#define COMMAND_DELAY 200
+enum { COMMAND_DELAY = 200 };
 
 Mody::Motor motor;
+Mody::Sonic sonic;
 
 void setup() {
     Serial.begin(9600);
 
     motor.setup();
+    sonic.setup();
 }
 
 
@@ -60,36 +67,6 @@ void loop() {
 #define ECHO_PIN 2 //(PD2)
 #define TRIG_PIN 3 //(PD2)
 #define LED_PIN 13
-
-enum State {
-    IDLE = 0,
-    STARTED,
-    FINISHED
-};
-
-struct Sonic {
-    long start;
-    long end;
-    State state;
-};
-
-volatile Sonic sonic;
-
-ISR (PCINT0_vect) {
-    int level = PIND & _BV(ECHO_PIN);
-    long us = micros();
-
-    if (level && sonic.state == IDLE) {
-        sonic.start = us;
-        sonic.state = STARTED;
-    } else if (!level && sonic.state == STARTED) {
-        sonic.end = us;
-        sonic.state = FINISHED;
-    } else {
-        // noop
-    }
-}
-
 
 void setup() {
     Serial.begin(9600);

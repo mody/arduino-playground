@@ -9,35 +9,44 @@ enum {
 
 enum Status {
     IDLE = 0,
-    WORKING,
-    DONE
+    STARTED,
+    LISTENING,
 };
 
 struct State {
-    State() : start(0L), end(0L), status(IDLE)
+    State() : start(0L), diff(0L), status(IDLE)
     { }
 
     long start;
-    long end;
+    long diff;
     Status status;
 };
 
 
 volatile static State state;
+static long range = 0;
 
 ISR (PCINT0_vect) {
     int level = PIND & _BV(ECHO_PIN);
     long us = micros();
 
-    if (level && state.status == IDLE) {
+    if (level && state.status == STARTED) {
         state.start = us;
-        state.status = WORKING;
-    } else if (!level && state.status == WORKING) {
-        state.end = us;
-        state.status = DONE;
+        state.status = LISTENING;
+    } else if (!level && state.status == LISTENING) {
+        state.diff = us - state.start;
+        state.status = IDLE;
     } else {
         // noop
     }
+}
+
+
+static void ping() {
+    digitalWrite(TRIG_PIN, HIGH);
+    delayMicroseconds(10);
+    digitalWrite(TRIG_PIN, LOW);
+    state.status = STARTED;
 }
 
 
@@ -55,26 +64,19 @@ void Sonic::setup() {
 }
 
 
-void Sonic::ping() {
-    if (state.status != IDLE) {
-        // USER ERROR!
-        return;
+bool Sonic::range(long *range) {
+    if (state.status == IDLE) {
+        ping();
     }
-    digitalWrite(TRIG_PIN, HIGH);
-    delayMicroseconds(10);
-    digitalWrite(TRIG_PIN, LOW);
+    if (range) {
+        *range = state.diff;
+    }
+    return !!state.diff;
 }
 
-long Sonic::range() {
-    long range = 0;
-    if (state.status == DONE) {
-        //TODO: compite distance
-    }
-    return range;
-}
 
 bool Sonic::available() const {
-    return state.status == DONE;
+    return !!state.diff;
 }
 
 

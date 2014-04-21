@@ -5,11 +5,8 @@ namespace Mody {
 struct Sonic {
     void setup();
 
-    void ping();
-    long range();
-
+    bool range(long *range);
     bool available() const;
 };
-
 
 }

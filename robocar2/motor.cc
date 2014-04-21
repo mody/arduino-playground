@@ -63,38 +63,47 @@ void Motor::setup() {
     pinMode(MOTOR_IN4_PIN, OUTPUT);
 }
 
-void Motor::forward() const {
+void Motor::forward() {
+    if (move == FORWARD) return;
     _stop();
     _leftForward();
     _rightForward();
     _go();
+    move = FORWARD;
 }
 
-void Motor::backward() const {
+void Motor::backward() {
+    if (move == BACKWARD) return;
     _stop();
     _leftBackward();
     _rightBackward();
     _go();
+    move = BACKWARD;
 }
 
-void Motor::left() const {
+void Motor::left() {
+    if (move == LEFT) return;
     _stop();
     _leftForward();
     _rightBackward();
     _go();
+    move = LEFT;
 }
 
-void Motor::right() const {
+void Motor::right() {
+    if (move == RIGHT) return;
     _stop();
     _leftBackward();
     _rightForward();
     _go();
+    move = RIGHT;
 }
 
-void Motor::stop() const {
+void Motor::stop() {
     _stop();
     _leftStop();
     _rightStop();
+    move = STOP;
 }
 
 }

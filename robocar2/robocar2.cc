@@ -7,7 +7,7 @@
 // /usr/share/arduino/hardware/arduino/variants/standard/pins_arduino.h
 
 // limit 30cm
-enum { RANGE_LIMIT = 20 };
+enum { RANGE_LIMIT = 30 };
 
 Mody::Motor motor;
 Mody::Sonic sonic;
@@ -26,11 +26,6 @@ void loop() {
         range /= 58; // convert to cm
     }
 
-    if (range && range < RANGE_LIMIT) {
-        // ALL STOP!
-        motor.stop();
-    }
-
     if (!Serial.available()) {
         return;
     }
@@ -44,6 +39,8 @@ void loop() {
     case '1': // forward
         if (!range || range >= RANGE_LIMIT) {
             motor.forward();
+        } else {
+            motor.stop();
         }
         break;
     case 'B': // backward

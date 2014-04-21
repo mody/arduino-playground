@@ -4,10 +4,12 @@ namespace Mody {
 
 struct Motor {
     void setup();
-    void forward();
-    void backward();
-    void left();
-    void right();
+
+    void forward() const;
+    void backward() const;
+    void left() const;
+    void right() const;
+    void stop() const;
 };
 
 }

@@ -64,31 +64,46 @@ void Motor::setup() {
 }
 
 void Motor::forward() {
+    if (move == FORWARD) return;
     _stop();
     _leftForward();
     _rightForward();
     _go();
+    move = FORWARD;
 }
 
 void Motor::backward() {
+    if (move == BACKWARD) return;
     _stop();
     _leftBackward();
     _rightBackward();
     _go();
+    move = BACKWARD;
 }
 
 void Motor::left() {
+    if (move == LEFT) return;
     _stop();
     _leftForward();
     _rightBackward();
     _go();
+    move = LEFT;
 }
 
 void Motor::right() {
+    if (move == RIGHT) return;
     _stop();
     _leftBackward();
     _rightForward();
     _go();
+    move = RIGHT;
+}
+
+void Motor::stop() {
+    _stop();
+    _leftStop();
+    _rightStop();
+    move = STOP;
 }
 
 }
